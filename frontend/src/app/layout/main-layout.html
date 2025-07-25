@@ -1,0 +1,34 @@
+<mat-sidenav-container class="sidenav-container">
+    <!-- Sidebar -->
+    <mat-sidenav #drawer mode="side" [(opened)]="isSidebarOpen" class="sidenav">
+        <mat-toolbar color="primary">Menu</mat-toolbar>
+        <mat-nav-list>
+            <a mat-list-item routerLink="/" routerLinkActive="active">
+                <mat-icon>cloud_upload</mat-icon>
+                <span>Upload</span>
+            </a>
+            <a mat-list-item routerLink="/chat" routerLinkActive="active">
+                <mat-icon>chat</mat-icon>
+                <span>Chat</span>
+            </a>
+            <a mat-list-item routerLink="/viewer" routerLinkActive="active">
+                <mat-icon>picture_as_pdf</mat-icon>
+                <span>Viewer</span>
+            </a>
+        </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <mat-toolbar color="primary" class="toolbar">
+            <button mat-icon-button (click)="toggleSidebar()">
+                <mat-icon>menu</mat-icon>
+            </button>
+            <span class="ml-4 text-xl font-semibold">NotebookLM Clone</span>
+        </mat-toolbar>
+
+        <div class="main-content p-4">
+            <router-outlet></router-outlet>
+        </div>
+    </mat-sidenav-content>
+
+</mat-sidenav-container>
