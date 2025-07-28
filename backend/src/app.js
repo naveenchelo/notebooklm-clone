@@ -40,10 +40,11 @@ app.use(
 app.use(express.json({ limit: config.upload.maxFileSize || '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: config.upload.maxFileSize || '50mb' }));
 
-// === STATIC FILES SETUP (Simplified and Corrected) ===
-
-// Define the single, correct path for the Angular build output based on angular.json.
-// This path goes up two levels from /backend/src to the project root /app.
+// ===================================================================
+// === THIS IS THE CORRECTED SECTION ===
+// ===================================================================
+// Define the single, correct path for the Angular build output.
+// We go up TWO directories ('..', '..') from /backend/src to reach the root /app
 const frontendPath = path.join(__dirname, '..', '..', 'frontend', 'dist', 'browser');
 const frontendExists = fs.existsSync(path.join(frontendPath, 'index.html'));
 
@@ -131,7 +132,7 @@ app.get('*', (req, res) => {
       message:
         'The server is running, but the user interface is missing because the frontend build was not successful.',
       suggestion:
-        'This is usually caused by an incorrect Node.js version during the build process. Please check your Dockerfile to ensure it uses a compatible Node.js version (e.g., node:22-alpine) and review the build logs for errors during the "RUN npm run build:frontend" step.',
+        'The path your server is checking is now correct. This error means the frontend build process itself failed inside Docker. Review your Docker build logs for any errors during the "RUN npm run build:frontend" step.',
       checkedPath: frontendPath,
       indexExists: false,
     });
