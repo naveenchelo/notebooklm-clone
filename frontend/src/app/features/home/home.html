@@ -1,0 +1,281 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">
+        Welcome to NotebookLM Clone
+      </h1>
+      <p class="text-xl text-gray-600">
+        Upload PDF documents and chat with them using AI
+      </p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center">
+          <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              ></path>
+            </svg>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-gray-500">Total Documents</p>
+            <p class="text-2xl font-semibold text-gray-900">
+              {{ (documentsStats$ | async)?.total || 0 }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center">
+          <div class="p-3 rounded-full bg-green-100 text-green-600">
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-gray-500">Processed</p>
+            <p class="text-2xl font-semibold text-gray-900">
+              {{ (documentsStats$ | async)?.processed || 0 }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center">
+          <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+              ></path>
+            </svg>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-gray-500">Total Pages</p>
+            <p class="text-2xl font-semibold text-gray-900">
+              {{ (documentsStats$ | async)?.totalPages || 0 }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Documents -->
+    <div class="bg-white rounded-lg shadow-md">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-900">Recent Documents</h2>
+      </div>
+
+      <div class="p-6">
+        <div *ngIf="loading$ | async" class="text-center py-8">
+          <div
+            class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"
+          ></div>
+          <p class="mt-2 text-gray-600">Loading documents...</p>
+        </div>
+
+        <div
+          *ngIf="
+            (documents$ | async) &&
+            (documents$ | async)!.length === 0 &&
+            !(loading$ | async)
+          "
+          class="text-center py-8"
+        >
+          <div class="text-gray-400 mb-4">
+            <svg
+              class="w-16 h-16 mx-auto"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">
+            No documents yet
+          </h3>
+          <p class="text-gray-600 mb-4">
+            Upload your first PDF document to get started
+          </p>
+          <button
+            routerLink="/upload"
+            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Upload Document
+          </button>
+        </div>
+
+        <div
+          *ngIf="(documents$ | async) && (documents$ | async)!.length > 0"
+          class="space-y-4"
+        >
+          <div
+            *ngFor="let document of documents$ | async"
+            class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
+          >
+            <div class="flex items-center space-x-4">
+              <div class="flex-shrink-0">
+                <div
+                  class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center"
+                >
+                  <svg
+                    class="w-6 h-6 text-blue-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <h3 class="text-sm font-medium text-gray-900">
+                  {{ document.originalName || "Untitled Document" }}
+                </h3>
+                <p class="text-sm text-gray-500">
+                  {{ document.pages || 0 }} pages •
+                  {{ formatFileSize(document.fileSize || 0) }}
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span
+                [class]="getStatusClass(document.status)"
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+              >
+                {{ document.status }}
+              </span>
+              <button
+                [routerLink]="['/chat', document.id]"
+                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                Chat
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+        <div class="space-y-3">
+          <button
+            routerLink="/upload"
+            class="w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            <svg
+              class="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+              ></path>
+            </svg>
+            Upload New Document
+          </button>
+          <button
+            routerLink="/search"
+            class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            <svg
+              class="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              ></path>
+            </svg>
+            Search Documents
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">
+          Getting Started
+        </h3>
+        <div class="space-y-3 text-sm text-gray-600">
+          <div class="flex items-start">
+            <div
+              class="flex-shrink-0 w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-0.5"
+            >
+              <span class="text-blue-600 text-xs font-medium">1</span>
+            </div>
+            <p>Upload a PDF document using the upload button</p>
+          </div>
+          <div class="flex items-start">
+            <div
+              class="flex-shrink-0 w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-0.5"
+            >
+              <span class="text-blue-600 text-xs font-medium">2</span>
+            </div>
+            <p>Wait for the document to be processed and indexed</p>
+          </div>
+          <div class="flex items-start">
+            <div
+              class="flex-shrink-0 w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-0.5"
+            >
+              <span class="text-blue-600 text-xs font-medium">3</span>
+            </div>
+            <p>Start chatting with your document using AI</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

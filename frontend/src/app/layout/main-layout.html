@@ -1,34 +1,75 @@
-<mat-sidenav-container class="sidenav-container">
-    <!-- Sidebar -->
-    <mat-sidenav #drawer mode="side" [(opened)]="isSidebarOpen" class="sidenav">
-        <mat-toolbar color="primary">Menu</mat-toolbar>
-        <mat-nav-list>
-            <a mat-list-item routerLink="/" routerLinkActive="active">
-                <mat-icon>cloud_upload</mat-icon>
-                <span>Upload</span>
-            </a>
-            <a mat-list-item routerLink="/chat" routerLinkActive="active">
-                <mat-icon>chat</mat-icon>
-                <span>Chat</span>
-            </a>
-            <a mat-list-item routerLink="/viewer" routerLinkActive="active">
-                <mat-icon>picture_as_pdf</mat-icon>
-                <span>Viewer</span>
-            </a>
-        </mat-nav-list>
-    </mat-sidenav>
-
-    <mat-sidenav-content>
-        <mat-toolbar color="primary" class="toolbar">
-            <button mat-icon-button (click)="toggleSidebar()">
-                <mat-icon>menu</mat-icon>
-            </button>
-            <span class="ml-4 text-xl font-semibold">NotebookLM Clone</span>
-        </mat-toolbar>
-
-        <div class="main-content p-4">
-            <router-outlet></router-outlet>
+<div class="app-container">
+  <!-- Top Navigation Bar -->
+  <nav class="top-nav">
+    <div class="nav-container">
+      <!-- Logo and Brand -->
+      <div class="nav-brand">
+        <div class="brand-logo">
+          <mat-icon class="text-white">auto_stories</mat-icon>
         </div>
-    </mat-sidenav-content>
+        <span class="brand-text">NotebookLM</span>
+      </div>
 
-</mat-sidenav-container>
+      <!-- Main Navigation -->
+      <div class="nav-menu">
+        <a routerLink="/" routerLinkActive="active" class="nav-link">
+          <mat-icon>home</mat-icon>
+          <span>Home</span>
+        </a>
+        <a routerLink="/upload" routerLinkActive="active" class="nav-link">
+          <mat-icon>cloud_upload</mat-icon>
+          <span>Upload</span>
+        </a>
+        <a routerLink="/chat" routerLinkActive="active" class="nav-link">
+          <mat-icon>chat</mat-icon>
+          <span>Chat</span>
+        </a>
+        <a routerLink="/viewer" routerLinkActive="active" class="nav-link">
+          <mat-icon>picture_as_pdf</mat-icon>
+          <span>Viewer</span>
+        </a>
+      </div>
+
+      <!-- Right Side Actions -->
+      <div class="nav-actions">
+        <button mat-icon-button class="action-btn" matTooltip="Search">
+          <mat-icon>search</mat-icon>
+        </button>
+        <button mat-icon-button class="action-btn" matTooltip="Notifications">
+          <mat-icon>notifications</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          class="action-btn"
+          [matMenuTriggerFor]="userMenu"
+        >
+          <mat-icon>account_circle</mat-icon>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <div class="content-container">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
+
+<!-- User Menu -->
+<mat-menu #userMenu="matMenu" class="user-menu">
+  <button mat-menu-item>
+    <mat-icon>person</mat-icon>
+    <span>Profile</span>
+  </button>
+  <button mat-menu-item>
+    <mat-icon>settings</mat-icon>
+    <span>Settings</span>
+  </button>
+  <mat-divider></mat-divider>
+  <button mat-menu-item>
+    <mat-icon>logout</mat-icon>
+    <span>Logout</span>
+  </button>
+</mat-menu>

@@ -1,19 +1,297 @@
-.sidenav-container {
-  height: 100vh;
+// Top Navigation Layout Styles
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
 }
 
-.sidenav {
-  width: 250px;
-  background: #fff;
-}
-
-.toolbar {
+// Top Navigation Bar
+.top-nav {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.nav-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+
+  @media (max-width: 768px) {
+    padding: 0 1rem;
+    gap: 1rem;
+  }
+}
+
+// Brand Section
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.brand-logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.brand-logo mat-icon {
+  font-size: 1.25rem;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.brand-text {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.025em;
+
+  @media (max-width: 640px) {
+    display: none;
+  }
+}
+
+// Navigation Menu
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  justify-content: center;
+
+  @media (max-width: 768px) {
+    gap: 0.25rem;
+  }
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+
+  &:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+  }
+
+  &.active {
+    color: white;
+    background: rgba(59, 130, 246, 0.2);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1.5rem;
+      height: 2px;
+      background: #3b82f6;
+      border-radius: 1px;
+    }
+  }
+
+  mat-icon {
+    font-size: 1.125rem;
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
+  span {
+    @media (max-width: 640px) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.5rem;
+    min-width: 2.5rem;
+    justify-content: center;
+  }
+}
+
+// Right Side Actions
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.action-btn {
+  color: rgba(255, 255, 255, 0.8);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
+  }
+
+  mat-icon {
+    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+// Main Content Area
 .main-content {
-  background: #f3f4f6; // tailwind's gray-100
-  min-height: calc(100vh - 64px); // adjust for toolbar height
+  flex: 1;
+  min-height: calc(100vh - 64px);
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #64748b 0%, #475569 100%);
+    border-radius: 4px;
+
+    &:hover {
+      background: linear-gradient(180deg, #475569 0%, #334155 100%);
+    }
+  }
+}
+
+.content-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: calc(100vh - 64px);
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+}
+
+// User Menu Styles
+.user-menu {
+  .mat-mdc-menu-content {
+    padding: 0.5rem 0;
+  }
+
+  .mat-mdc-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #374151;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: #f3f4f6;
+    }
+
+    mat-icon {
+      color: #6b7280;
+      font-size: 1.125rem;
+      width: 1.125rem;
+      height: 1.125rem;
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 640px) {
+  .nav-container {
+    height: 56px;
+  }
+
+  .brand-logo {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .brand-logo mat-icon {
+    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .nav-link {
+    font-size: 0.75rem;
+  }
+
+  .action-btn mat-icon {
+    font-size: 1.125rem;
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
+  .main-content {
+    min-height: calc(100vh - 56px);
+  }
+
+  .content-container {
+    min-height: calc(100vh - 56px);
+  }
+}
+
+// Animation for active state
+.nav-link.active {
+  animation: navActive 0.3s ease-out;
+}
+
+@keyframes navActive {
+  0% {
+    transform: translateY(-1px) scale(0.95);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: translateY(-1px) scale(1);
+    opacity: 1;
+  }
+}
+
+// Hover effects for better UX
+.nav-link:hover {
+  animation: navHover 0.2s ease-out;
+}
+
+@keyframes navHover {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+
+  100% {
+    transform: translateY(-1px) scale(1.02);
+  }
 }

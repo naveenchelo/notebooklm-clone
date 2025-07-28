@@ -1,0 +1,272 @@
+   .viewer-container {
+       height: calc(100vh - 64px);
+       display: flex;
+       flex-direction: column;
+       background: #f8fafc;
+   }
+
+   .viewer-toolbar {
+       background: white;
+       border-bottom: 1px solid #e2e8f0;
+       padding: 0 1rem;
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       height: 64px;
+   }
+
+   .toolbar-left,
+   .toolbar-center,
+   .toolbar-right {
+       display: flex;
+       align-items: center;
+       gap: 0.5rem;
+   }
+
+   .page-info {
+       display: flex;
+       align-items: center;
+       margin: 0 1rem;
+   }
+
+   .page-text {
+       font-weight: 500;
+       color: #374151;
+   }
+
+   .zoom-control {
+       display: flex;
+       align-items: center;
+       gap: 0.5rem;
+       margin: 0 1rem;
+   }
+
+   .zoom-text {
+       font-size: 0.875rem;
+       color: #6b7280;
+       min-width: 3rem;
+   }
+
+   .zoom-slider {
+       width: 100px;
+   }
+
+   .pdf-content {
+       flex: 1;
+       display: flex;
+       overflow: hidden;
+   }
+
+   .pdf-container {
+       flex: 1;
+       overflow: auto;
+       display: flex;
+       justify-content: center;
+       align-items: flex-start;
+       padding: 2rem;
+       background: #e5e7eb;
+   }
+
+   .pdf-page {
+       transform-origin: top center;
+       transition: transform 0.2s ease;
+   }
+
+   .page-mockup {
+       background: white;
+       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+       border-radius: 0.5rem;
+       width: 612px;
+       /* Standard A4 width */
+       min-height: 792px;
+       /* Standard A4 height */
+       padding: 2rem;
+       display: flex;
+       flex-direction: column;
+   }
+
+   .page-header {
+       text-align: center;
+       margin-bottom: 2rem;
+       padding-bottom: 1rem;
+       border-bottom: 1px solid #e5e7eb;
+   }
+
+   .page-title {
+       font-size: 1.5rem;
+       font-weight: bold;
+       color: #1f2937;
+       margin: 0 0 0.5rem 0;
+   }
+
+   .page-subtitle {
+       color: #6b7280;
+       margin: 0;
+   }
+
+   .page-content {
+       flex: 1;
+       line-height: 1.6;
+   }
+
+   .content-text {
+       margin-bottom: 1rem;
+       color: #374151;
+   }
+
+   .highlighted-text {
+       background: #fef3c7;
+       padding: 1rem;
+       border-radius: 0.5rem;
+       border-left: 4px solid #f59e0b;
+       margin: 1rem 0;
+   }
+
+   .highlight {
+       color: #92400e;
+       font-weight: 500;
+   }
+
+   .page-footer {
+       text-align: center;
+       margin-top: 2rem;
+       padding-top: 1rem;
+       border-top: 1px solid #e5e7eb;
+   }
+
+   .page-number {
+       color: #6b7280;
+       font-size: 0.875rem;
+   }
+
+   .viewer-sidebar {
+       width: 320px;
+       background: white;
+       border-left: 1px solid #e2e8f0;
+       display: flex;
+       flex-direction: column;
+       transform: translateX(100%);
+       transition: transform 0.3s ease;
+   }
+
+   .viewer-sidebar.sidebar-open {
+       transform: translateX(0);
+   }
+
+   .sidebar-header {
+       padding: 1rem;
+       border-bottom: 1px solid #e2e8f0;
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+   }
+
+   .sidebar-title {
+       font-size: 1.125rem;
+       font-weight: 600;
+       color: #1f2937;
+       margin: 0;
+   }
+
+   .sidebar-content {
+       flex: 1;
+       overflow-y: auto;
+       padding: 1rem;
+   }
+
+   .annotation-item {
+       background: #f9fafb;
+       border-radius: 0.5rem;
+       padding: 1rem;
+       margin-bottom: 1rem;
+       border: 1px solid #e5e7eb;
+   }
+
+   .annotation-header {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       margin-bottom: 0.5rem;
+   }
+
+   .annotation-type {
+       background: #3b82f6;
+       color: white;
+       padding: 0.25rem 0.5rem;
+       border-radius: 0.25rem;
+       font-size: 0.75rem;
+       font-weight: 500;
+   }
+
+   .annotation-page {
+       color: #6b7280;
+       font-size: 0.875rem;
+   }
+
+   .annotation-text {
+       color: #374151;
+       margin-bottom: 0.75rem;
+       line-height: 1.5;
+   }
+
+   .annotation-actions {
+       display: flex;
+       gap: 0.5rem;
+   }
+
+   .no-annotations {
+       text-align: center;
+       padding: 2rem;
+       color: #6b7280;
+   }
+
+   .no-annotations mat-icon {
+       font-size: 3rem;
+       width: 3rem;
+       height: 3rem;
+       margin-bottom: 1rem;
+   }
+
+   .fab-annotate {
+       position: fixed;
+       bottom: 2rem;
+       right: 2rem;
+       z-index: 1000;
+   }
+
+   .fab-sidebar {
+       position: fixed;
+       bottom: 2rem;
+       right: 5rem;
+       z-index: 1000;
+   }
+
+   @media (max-width: 768px) {
+       .viewer-toolbar {
+           flex-direction: column;
+           height: auto;
+           padding: 0.5rem;
+       }
+
+       .toolbar-center {
+           order: -1;
+           margin: 0.5rem 0;
+       }
+
+       .pdf-container {
+           padding: 1rem;
+       }
+
+       .page-mockup {
+           width: 100%;
+           max-width: 612px;
+       }
+
+       .viewer-sidebar {
+           position: fixed;
+           top: 64px;
+           right: 0;
+           height: calc(100vh - 64px);
+           z-index: 1000;
+       }
+   }
