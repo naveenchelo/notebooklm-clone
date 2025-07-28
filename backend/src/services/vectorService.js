@@ -30,25 +30,30 @@ class VectorService {
    */
   async generateEmbedding(text) {
     try {
-      // Check if API key is available
-      if (!config.groq.apiKey) {
-        console.warn('⚠️  Groq API key not configured, using mock embedding in development mode');
-        // Return mock embedding for development
-        return Array.from({ length: 1536 }, () => Math.random() - 0.5);
-      }
+      // Use a simple hash-based embedding for development/demo
+      // In production, use OpenAI, Cohere, or HuggingFace
+      console.warn('⚠️ Using mock embedding - replace with real embedding service in production');
 
-      // Note: Groq doesn't have a dedicated embeddings API, so we'll use a mock embedding
-      // In production, you might want to use a different service for embeddings
-      console.warn("⚠️  Groq doesn't provide embeddings API, using mock embedding");
-      return Array.from({ length: 1536 }, () => Math.random() - 0.5);
+      // Create a deterministic embedding based on text content
+      const hash = this.simpleHash(text);
+      const embedding = Array.from({ length: 1536 }, (_, i) => {
+        return Math.sin(hash * (i + 1)) * 0.5;
+      });
+
+      return embedding;
     } catch (error) {
-      if (error.message.includes('429') || error.message.includes('quota')) {
-        console.warn('⚠️  Groq quota exceeded, using mock embedding in development mode');
-        // Return mock embedding for development
-        return Array.from({ length: 1536 }, () => Math.random() - 0.5);
-      }
       throw new Error(`Failed to generate embedding: ${error.message}`);
     }
+  }
+
+  simpleHash(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    return Math.abs(hash) / 2147483647; // Normalize to 0-1
   }
 
   /**

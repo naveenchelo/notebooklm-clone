@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://notebooklm-backend-production.up.railway.app/api',
+  apiUrl: 'https://notebooklm-clone-production.up.railway.app/api',
   maxFileSize: 50 * 1024 * 1024, // 50MB
   supportedFormats: ['pdf'],
   chunkSize: 1000,
