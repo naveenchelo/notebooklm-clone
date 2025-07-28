@@ -18,8 +18,8 @@ app.use(helmet()); // Security headers
 app.use(
   cors({
     origin: [
-      'https://notebooklm-clone-nw8j.onrender.com', // Backend
-      'https://notebooklm-clone-frontend.onrender.com',
+      'http://localhost:3000', // Backend
+      'http://localhost:4200',
     ],
     credentials: true,
   })
