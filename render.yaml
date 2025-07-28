@@ -71,8 +71,8 @@ services:
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist/frontend
-    # Add these for Angular routing
+    # Handle Angular client-side routing
     routes:
       - type: rewrite
-        source: /*
+        source: "/*"
         destination: /index.html
