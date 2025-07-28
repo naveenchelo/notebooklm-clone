@@ -43,7 +43,8 @@ app.use(express.urlencoded({ extended: true, limit: config.upload.maxFileSize ||
 // === STATIC FILES SETUP (Simplified and Corrected) ===
 
 // Define the single, correct path for the Angular build output based on angular.json.
-const frontendPath = path.join(__dirname, '..', 'frontend', 'dist', 'browser');
+// This path goes up two levels from /backend/src to the project root /app.
+const frontendPath = path.join(__dirname, '..', '..', 'frontend', 'dist', 'browser');
 const frontendExists = fs.existsSync(path.join(frontendPath, 'index.html'));
 
 // Serve static files from the Angular app directory.
