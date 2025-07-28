@@ -69,9 +69,10 @@ services:
   - type: static
     name: notebooklm-frontend
     rootDir: frontend
-    buildCommand: npm install && npm run build
+    buildCommand: npm ci && npm run build
     staticPublishPath: dist/frontend
-    # Handle Angular client-side routing
+    
+    # Simple SPA routing - catch all routes and serve index.html
     routes:
       - type: rewrite
         source: "/*"
