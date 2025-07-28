@@ -8,10 +8,10 @@ const config = {
     frontendUrl: process.env.FRONTEND_URL || 'http://localhost:4200',
   },
 
-  // OpenAI Configuration
-  openai: {
-    apiKey: process.env.OPENAI_API_KEY,
-    model: process.env.OPENAI_MODEL || 'gpt-3.5-turbo',
+  // Groq Configuration
+  groq: {
+    apiKey: process.env.GROQ_API_KEY,
+    model: process.env.GROQ_MODEL || 'llama3-8b-8192',
     maxTokens: 2000,
     temperature: 0.7,
   },
@@ -61,7 +61,7 @@ const config = {
 };
 
 // Validation
-const requiredEnvVars = ['OPENAI_API_KEY', 'PINECONE_API_KEY', 'PINECONE_ENVIRONMENT'];
+const requiredEnvVars = ['GROQ_API_KEY', 'PINECONE_API_KEY', 'PINECONE_ENVIRONMENT'];
 
 const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
 

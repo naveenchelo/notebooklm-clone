@@ -1,11 +1,11 @@
 const express = require('express');
-const OpenAI = require('openai');
+const Groq = require('groq-sdk');
 const config = require('../config');
 const vectorService = require('../services/vectorService');
 
 const router = express.Router();
-const openai = new OpenAI({
-  apiKey: config.openai.apiKey,
+const groq = new Groq({
+  apiKey: config.groq.apiKey,
 });
 
 // In-memory storage for chat history (replace with database in production)
@@ -62,7 +62,7 @@ router.post('/:documentId', async (req, res) => {
     4. Be helpful, accurate, and concise
     5. If asked about something not in the document, politely redirect to the document content`;
 
-    // Prepare messages for OpenAI
+    // Prepare messages for Groq
     const messages = [
       { role: 'system', content: systemPrompt },
       ...conversationHistory,
@@ -70,11 +70,11 @@ router.post('/:documentId', async (req, res) => {
     ];
 
     // Get AI response
-    const completion = await openai.chat.completions.create({
-      model: config.openai.model,
+    const completion = await groq.chat.completions.create({
+      model: config.groq.model,
       messages: messages,
-      max_tokens: config.openai.maxTokens,
-      temperature: config.openai.temperature,
+      max_tokens: config.groq.maxTokens,
+      temperature: config.groq.temperature,
       stream: false,
     });
 
@@ -254,11 +254,11 @@ router.post('/:documentId/stream', async (req, res) => {
     ];
 
     // Stream response
-    const stream = await openai.chat.completions.create({
-      model: config.openai.model,
+    const stream = await groq.chat.completions.create({
+      model: config.groq.model,
       messages: messages,
-      max_tokens: config.openai.maxTokens,
-      temperature: config.openai.temperature,
+      max_tokens: config.groq.maxTokens,
+      temperature: config.groq.temperature,
       stream: true,
     });
 
