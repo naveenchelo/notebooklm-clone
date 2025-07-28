@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: '/api', // Will be configured for production
+  apiUrl: 'https://notebooklm-clone-nw8j.onrender.com/api', // Will be configured for production
   maxFileSize: 50 * 1024 * 1024, // 50MB
   supportedFormats: ['pdf'],
   chunkSize: 1000,
