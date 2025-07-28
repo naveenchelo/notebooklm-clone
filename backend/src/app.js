@@ -31,7 +31,7 @@ app.use(express.json({ limit: config.upload.maxFileSize || '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: config.upload.maxFileSize || '50mb' }));
 
 // Serve Angular static files from frontend/dist
-const frontendPath = path.join(__dirname, '../../frontend/dist');
+const frontendPath = path.join(__dirname, '../../frontend/dist/browser');
 app.use(express.static(frontendPath));
 
 // === API ROUTES ===

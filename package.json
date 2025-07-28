@@ -8,10 +8,10 @@
     "install:backend": "cd backend && npm install",
     "install:frontend": "cd frontend && npm install",
     "build:frontend": "cd frontend && npm run build",
-    "build": "npm run install:all && npm run build:frontend",
+    "build": "npm run install:all && npm run build:frontend || echo '⚠️ Frontend build failed, continuing...'",
     "start": "cd backend && node src/app.js",
     "dev": "cd backend && npm run dev",
-    "postinstall": "npm run build:frontend || echo '⚠️ Frontend build failed, continuing...'"
+    "postinstall": "npm run install:all"
   },
   "dependencies": {
     "@pinecone-database/pinecone": "^1.1.0",
