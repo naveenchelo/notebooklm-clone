@@ -17,7 +17,10 @@ const searchRoutes = require('./src/routes/search');
 app.use(helmet()); // Security headers
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:4200',
+    origin: [
+      'https://notebooklm-clone-nw8j.onrender.com', // Backend
+      'https://notebooklm-clone-frontend.onrender.com',
+    ],
     credentials: true,
   })
 );
