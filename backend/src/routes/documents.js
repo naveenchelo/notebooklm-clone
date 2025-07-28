@@ -75,15 +75,7 @@ router.post('/upload', single, handleUploadError, async (req, res) => {
     res.status(201).json({
       success: true,
       message: 'Document uploaded and processed successfully',
-      document: {
-        id: document.id,
-        filename: document.filename,
-        pages: document.pages,
-        chunks: document.chunks,
-        fileSize: document.fileSize,
-        uploadedAt: document.uploadedAt,
-        metadata: document.metadata,
-      },
+      document: document,
     });
   } catch (error) {
     console.error('Upload error:', error);
@@ -104,11 +96,15 @@ router.get('/', async (req, res) => {
     const documentsList = Array.from(documents.values()).map(doc => ({
       id: doc.id,
       filename: doc.filename,
+      originalName: doc.originalName,
+      filePath: doc.filePath,
       pages: doc.pages,
       chunks: doc.chunks,
       fileSize: doc.fileSize,
       uploadedAt: doc.uploadedAt,
       metadata: doc.metadata,
+      processingInfo: doc.processingInfo,
+      vectorInfo: doc.vectorInfo,
       status: doc.status,
     }));
 
@@ -121,6 +117,33 @@ router.get('/', async (req, res) => {
     console.error('Get documents error:', error);
     res.status(500).json({
       error: 'Failed to retrieve documents',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * @route GET /api/documents/debug
+ * @desc Get debug information about documents storage
+ * @access Public
+ */
+router.get('/debug', async (req, res) => {
+  try {
+    res.json({
+      success: true,
+      totalDocuments: documents.size,
+      documentIds: Array.from(documents.keys()),
+      documents: Array.from(documents.entries()).map(([id, doc]) => ({
+        id,
+        filename: doc.filename,
+        status: doc.status,
+        uploadedAt: doc.uploadedAt,
+      })),
+    });
+  } catch (error) {
+    console.error('Debug error:', error);
+    res.status(500).json({
+      error: 'Failed to get debug info',
       message: error.message,
     });
   }
