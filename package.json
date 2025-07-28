@@ -1,0 +1,23 @@
+{
+  "name": "notebooklm-clone",
+  "version": "1.0.0",
+  "description": "NotebookLM clone with PDF processing and AI chat",
+  "main": "backend/src/app.js",
+  "scripts": {
+    "build": "npm run build:frontend && npm run setup:backend",
+    "build:frontend": "cd frontend && npm ci && npm run build",
+    "setup:backend": "cd backend && npm ci",
+    "start": "cd backend && npm start",
+    "dev": "cd backend && npm run dev"
+  },
+  "engines": {
+    "node": "18.x",
+    "npm": "9.x"
+  },
+  "keywords": [
+    "notebooklm",
+    "pdf",
+    "ai",
+    "railway"
+  ]
+}
