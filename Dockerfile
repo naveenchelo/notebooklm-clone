@@ -5,27 +5,32 @@ FROM node:22-alpine AS build
 # Set the working directory
 WORKDIR /app
 
-# Copy package management files first for efficient caching
-COPY package*.json ./
-COPY frontend/package*.json ./frontend/
-COPY backend/package*.json ./backend/
+# --- Dependency Installation ---
+# Copy ONLY the package.json files that actually exist.
+# We copy them first to leverage Docker's layer caching.
+COPY backend/package.json ./backend/
+COPY backend/package-lock.json ./backend/
+COPY frontend/package.json ./frontend/
+COPY frontend/package-lock.json ./frontend/
 
-# Install ALL dependencies cleanly inside the container.
-# This ensures the correct (Linux) version of all packages are installed.
-RUN npm install
+# Install backend dependencies
+RUN npm install --prefix backend
 
-# Now that dependencies are correctly installed, copy the rest of the source code.
-# The .dockerignore file should prevent your local node_modules from being copied.
+# Install frontend dependencies inside the 'frontend' directory
+RUN npm install --prefix frontend
+
+# --- Source Code Copy ---
+# Now that dependencies are installed, copy the rest of the source code.
+# The .dockerignore file will prevent local node_modules from being copied.
 COPY . .
 
-# Build the frontend.
-# The command should be "npm run build" inside the frontend directory.
-RUN npm run build:frontend
+# --- Frontend Build ---
+# Run the Angular build command from within the frontend directory.
+RUN cd frontend && npm run build
 
 # =========================================================
 # !!! CRITICAL DEBUGGING STEP !!!
-# List the contents of the frontend directory to see the build output.
-# This will show us if the 'dist/browser' directory was created.
+# This will show the 'dist' directory if the build was successful.
 # =========================================================
 RUN echo "--- Listing frontend directory contents after build ---" && ls -laR frontend
 
@@ -36,11 +41,15 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-# Copy the entire built application from the build stage
+# Set the environment to production
+ENV NODE_ENV=production
+
+# Copy all necessary files from the build stage
+# This includes the built frontend, the backend source, and all node_modules.
 COPY --from=build /app /app
 
 # Expose the port the application runs on
 EXPOSE 3000
 
-# Command to start the backend server
-CMD ["npm", "start"]
+# Command to start the backend server, which will serve the frontend.
+CMD ["npm", "start", "--prefix", "backend"]
