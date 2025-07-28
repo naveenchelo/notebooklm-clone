@@ -3,3 +3,6 @@ node_modules
 dist
 .DS_Store
 .env
+*.js
+src/
+server.js

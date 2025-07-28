@@ -34,6 +34,12 @@ RUN cd frontend && npm run build
 # =========================================================
 RUN echo "--- Listing frontend directory contents after build ---" && ls -laR frontend
 
+# ===============================================
+# === NEW DEBUGGING LINE: ADD THIS LINE ===
+# ===============================================
+# This will list the files in the src directory so we can see what's there.
+RUN ls -la /app/backend/src
+
 
 # ---- Final Stage ----
 # Use a fresh, lean image for the final application
