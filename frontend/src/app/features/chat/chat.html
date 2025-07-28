@@ -2,8 +2,37 @@
   <div class="chat-layout">
     <!-- Chat Messages Area -->
     <div class="messages-container" #messagesContainer>
+      <!-- Loading State -->
+      <div *ngIf="loading$ | async" class="text-center py-8">
+        <div
+          class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"
+        ></div>
+        <p class="mt-2 text-gray-600">Loading chat history...</p>
+      </div>
+
+      <!-- Error State -->
+      <div
+        *ngIf="error$ | async as error"
+        class="bg-red-50 border border-red-200 rounded-md p-4 m-4"
+      >
+        <div class="flex">
+          <mat-icon class="text-red-400">error</mat-icon>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-red-800">Chat Error</h3>
+            <div class="mt-2 text-sm text-red-700">{{ error }}</div>
+          </div>
+        </div>
+      </div>
+
       <!-- Welcome Message -->
-      <div *ngIf="messages.length === 0" class="welcome-message">
+      <div
+        *ngIf="
+          (messages$ | async) &&
+          (messages$ | async)!.length === 0 &&
+          !(loading$ | async)
+        "
+        class="welcome-message"
+      >
         <div class="text-center">
           <div class="welcome-icon">
             <mat-icon class="text-6xl text-blue-500">chat</mat-icon>
@@ -22,7 +51,7 @@
                 *ngFor="let suggestion of suggestions"
                 mat-stroked-button
                 class="suggestion-btn"
-                (click)="sendMessage(suggestion)"
+                (click)="sendSuggestion(suggestion)"
               >
                 {{ suggestion }}
               </button>
@@ -33,16 +62,16 @@
 
       <!-- Messages -->
       <div
-        *ngFor="let message of messages; trackBy: trackByMessageId"
+        *ngFor="let message of messages$ | async; trackBy: trackByMessageId"
         class="message-wrapper"
-        [ngClass]="message.sender"
+        [ngClass]="message.role"
       >
         <div class="message">
           <div class="message-avatar">
-            <mat-icon *ngIf="message.sender === 'user'" class="text-white"
+            <mat-icon *ngIf="message.role === 'user'" class="text-white"
               >person</mat-icon
             >
-            <mat-icon *ngIf="message.sender === 'ai'" class="text-white"
+            <mat-icon *ngIf="message.role === 'assistant'" class="text-white"
               >smart_toy</mat-icon
             >
           </div>
@@ -71,7 +100,7 @@
             </div>
 
             <!-- Loading Indicator -->
-            <div *ngIf="message.isLoading" class="loading-indicator">
+            <div *ngIf="streaming$ | async" class="loading-indicator">
               <div class="typing-dots">
                 <span></span>
                 <span></span>
@@ -109,7 +138,7 @@
               mat-fab
               color="primary"
               class="send-btn"
-              [disabled]="!newMessage.trim() || isTyping"
+              [disabled]="!newMessage.trim() || (loading$ | async)"
               (click)="sendMessage(newMessage)"
             >
               <mat-icon>send</mat-icon>

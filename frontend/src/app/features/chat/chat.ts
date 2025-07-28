@@ -4,9 +4,11 @@ import {
   ViewChild,
   ElementRef,
   AfterViewChecked,
+  OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,15 +16,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
-
-interface ChatMessage {
-  id: string;
-  content: string;
-  sender: 'user' | 'ai';
-  timestamp: Date;
-  citations?: Array<{ page: number; text: string }>;
-  isLoading?: boolean;
-}
+import { Store } from '@ngrx/store';
+import { Observable, Subject, takeUntil } from 'rxjs';
+import { ChatMessage } from '../../models/chat.model';
+import { Document } from '../../models/document.model';
+import * as ChatActions from '../../store/actions/chat.actions';
+import * as ChatSelectors from '../../store/selectors/chat.selectors';
+import * as DocumentSelectors from '../../store/selectors/document.selectors';
 
 @Component({
   selector: 'app-chat',
@@ -41,13 +41,21 @@ interface ChatMessage {
   templateUrl: './chat.html',
   styleUrl: './chat.scss',
 })
-export class Chat {
+export class Chat implements OnInit, OnDestroy {
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
   @ViewChild('messageInput') messageInput!: ElementRef;
 
-  messages: ChatMessage[] = [];
+  private destroy$ = new Subject<void>();
   newMessage = '';
-  isTyping = false;
+  currentDocumentId: string | null = null;
+
+  // NgRx observables
+  messages$: Observable<ChatMessage[]>;
+  loading$: Observable<boolean>;
+  error$: Observable<string | null>;
+  currentDocument$: Observable<Document[]>;
+  streaming$: Observable<boolean>;
+  streamingMessage$: Observable<string>;
 
   suggestions = [
     'What are the main findings in this document?',
@@ -56,15 +64,43 @@ export class Chat {
     'What are the conclusions?',
   ];
 
+  constructor(
+    private store: Store,
+    private route: ActivatedRoute,
+  ) {
+    // Initialize with empty observables, will be updated in ngOnInit
+    this.messages$ = this.store.select(ChatSelectors.selectCurrentMessages);
+    this.loading$ = this.store.select(ChatSelectors.selectCurrentLoading);
+    this.error$ = this.store.select(ChatSelectors.selectCurrentError);
+    this.currentDocument$ = this.store.select(
+      DocumentSelectors.selectAllDocuments,
+    );
+    this.streaming$ = this.store.select(ChatSelectors.selectCurrentStreaming);
+    this.streamingMessage$ = this.store.select(
+      ChatSelectors.selectCurrentStreamingMessage,
+    );
+  }
+
   ngOnInit() {
-    // Add a welcome message
-    this.messages.push({
-      id: 'welcome',
-      content:
-        "Hello! I'm here to help you understand your documents. Ask me anything about the content you've uploaded.",
-      sender: 'ai',
-      timestamp: new Date(),
+    // Get document ID from route
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.currentDocumentId = params['id'];
+      if (this.currentDocumentId) {
+        this.store.dispatch(
+          ChatActions.setCurrentDocument({
+            documentId: this.currentDocumentId,
+          }),
+        );
+        this.store.dispatch(
+          ChatActions.loadChatHistory({ documentId: this.currentDocumentId }),
+        );
+      }
     });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   ngAfterViewChecked() {
@@ -72,62 +108,26 @@ export class Chat {
   }
 
   sendMessage(content: string) {
-    if (!content.trim() || this.isTyping) return;
-
-    // Add user message
-    const userMessage: ChatMessage = {
-      id: Date.now().toString(),
-      content: content.trim(),
-      sender: 'user',
-      timestamp: new Date(),
-    };
-    this.messages.push(userMessage);
+    if (!content.trim() || !this.currentDocumentId) return;
 
     // Clear input
     this.newMessage = '';
 
-    // Add AI response placeholder
-    const aiMessage: ChatMessage = {
-      id: (Date.now() + 1).toString(),
-      content: '',
-      sender: 'ai',
-      timestamp: new Date(),
-      isLoading: true,
-    };
-    this.messages.push(aiMessage);
-
-    this.isTyping = true;
-
-    // Simulate AI response
-    setTimeout(() => {
-      this.simulateAIResponse(aiMessage);
-    }, 1000);
+    // Get current messages and dispatch send message action
+    this.messages$.pipe(takeUntil(this.destroy$)).subscribe((messages) => {
+      this.store.dispatch(
+        ChatActions.sendMessage({
+          documentId: this.currentDocumentId!,
+          message: content.trim(),
+          history: messages,
+        }),
+      );
+    });
   }
 
-  private simulateAIResponse(message: ChatMessage) {
-    message.isLoading = false;
-    message.content = this.generateMockResponse();
-
-    // Add some citations
-    if (Math.random() > 0.5) {
-      message.citations = [
-        { page: 1, text: 'Introduction section' },
-        { page: 3, text: 'Methodology overview' },
-      ];
-    }
-
-    this.isTyping = false;
-  }
-
-  private generateMockResponse(): string {
-    const responses = [
-      'Based on the document, I can see that the main findings focus on...',
-      'The document outlines several key points that are worth noting...',
-      'From my analysis of the content, the methodology employed was...',
-      'The conclusions drawn from this research indicate that...',
-      'This document presents a comprehensive overview of...',
-    ];
-    return responses[Math.floor(Math.random() * responses.length)];
+  sendSuggestion(suggestion: string) {
+    this.newMessage = suggestion;
+    this.sendMessage(suggestion);
   }
 
   onEnterPress(event: Event) {

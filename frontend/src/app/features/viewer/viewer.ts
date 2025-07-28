@@ -1,5 +1,12 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  OnDestroy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,12 +14,18 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
+import { Store } from '@ngrx/store';
+import { Observable, Subject, takeUntil } from 'rxjs';
+import { Document } from '../../models/document.model';
+import * as DocumentActions from '../../store/actions/document.actions';
+import * as DocumentSelectors from '../../store/selectors/document.selectors';
 
 @Component({
   selector: 'app-upload',
   standalone: true,
   imports: [
     CommonModule,
+    RouterModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -24,13 +37,20 @@ import { MatChipsModule } from '@angular/material/chips';
   templateUrl: './viewer.html',
   styleUrl: './viewer.scss',
 })
-export class Viewer implements OnInit {
+export class Viewer implements OnInit, OnDestroy {
   @ViewChild('pdfContainer') pdfContainer!: ElementRef;
 
+  private destroy$ = new Subject<void>();
   currentPage = 1;
   totalPages = 10;
   zoom = 1;
   showSidebar = false;
+  currentDocumentId: string | null = null;
+
+  // NgRx observables
+  document$: Observable<Document[]>;
+  loading$: Observable<boolean>;
+  error$: Observable<string | null>;
 
   annotations = [
     {
@@ -47,9 +67,33 @@ export class Viewer implements OnInit {
     },
   ];
 
+  constructor(
+    private store: Store,
+    private route: ActivatedRoute,
+  ) {
+    this.document$ = this.store.select(DocumentSelectors.selectAllDocuments);
+    this.loading$ = this.store.select(DocumentSelectors.selectDocumentsLoading);
+    this.error$ = this.store.select(DocumentSelectors.selectDocumentsError);
+  }
+
   ngOnInit() {
+    // Get document ID from route
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.currentDocumentId = params['id'];
+      if (this.currentDocumentId) {
+        this.store.dispatch(
+          DocumentActions.loadDocument({ id: this.currentDocumentId }),
+        );
+      }
+    });
+
     // Initialize PDF viewer
     this.loadMockPDF();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   loadMockPDF() {

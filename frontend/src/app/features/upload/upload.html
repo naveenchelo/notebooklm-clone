@@ -54,22 +54,69 @@
               <mat-icon class="text-blue-500">picture_as_pdf</mat-icon>
               <span class="font-medium text-slate-700">{{ file.name }}</span>
             </div>
-            <span class="text-sm text-slate-500">{{ file.progress }}%</span>
+            <div class="flex items-center space-x-2">
+              <span class="text-sm text-slate-500">{{ file.progress }}%</span>
+              <button
+                *ngIf="file.error"
+                mat-icon-button
+                (click)="retryUpload(file.name)"
+                class="text-orange-500 hover:text-orange-700"
+              >
+                <mat-icon>refresh</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                (click)="removeUpload(file.name)"
+                class="text-red-500 hover:text-red-700"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
           </div>
           <mat-progress-bar
             [value]="file.progress"
-            color="primary"
+            [color]="file.error ? 'warn' : 'primary'"
             class="h-2"
           ></mat-progress-bar>
+          <div *ngIf="file.error" class="mt-2 text-sm text-red-600">
+            {{ file.error }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading$ | async" class="mt-6 text-center py-8">
+      <div
+        class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"
+      ></div>
+      <p class="mt-2 text-gray-600">Loading documents...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error$ | async as error" class="mt-6">
+      <div class="bg-red-50 border border-red-200 rounded-md p-4">
+        <div class="flex">
+          <mat-icon class="text-red-400">error</mat-icon>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-red-800">Upload Error</h3>
+            <div class="mt-2 text-sm text-red-700">{{ error }}</div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Recent Uploads -->
-    <div *ngIf="recentUploads.length > 0" class="mt-8">
+    <div
+      *ngIf="(documents$ | async) && (documents$ | async)!.length > 0"
+      class="mt-8"
+    >
       <h3 class="text-lg font-semibold text-slate-700 mb-4">Recent Uploads</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <mat-card *ngFor="let upload of recentUploads" class="upload-item-card">
+        <mat-card
+          *ngFor="let document of documents$ | async"
+          class="upload-item-card"
+        >
           <mat-card-content>
             <div class="flex items-center space-x-3">
               <div
@@ -79,26 +126,58 @@
               </div>
               <div class="flex-1 min-w-0">
                 <h4 class="font-medium text-slate-700 truncate">
-                  {{ upload.name }}
+                  {{ document.originalName || "Untitled Document" }}
                 </h4>
                 <p class="text-sm text-slate-500">
-                  {{ upload.uploadedAt | date: "short" }}
+                  {{ document.uploadedAt | date: "short" }}
+                </p>
+                <p class="text-xs text-slate-400">
+                  {{ document.pages || 0 }} pages •
+                  {{ formatFileSize(document.fileSize || 0) }}
                 </p>
               </div>
             </div>
           </mat-card-content>
           <mat-card-actions>
-            <button mat-button color="primary" class="text-sm">
+            <button
+              [routerLink]="['/chat', document.id]"
+              mat-button
+              color="primary"
+              class="text-sm"
+            >
               <mat-icon>chat</mat-icon>
               Chat
             </button>
-            <button mat-button color="accent" class="text-sm">
+            <button
+              [routerLink]="['/viewer', document.id]"
+              mat-button
+              color="accent"
+              class="text-sm"
+            >
               <mat-icon>visibility</mat-icon>
               View
             </button>
           </mat-card-actions>
         </mat-card>
       </div>
+    </div>
+
+    <!-- Empty State -->
+    <div
+      *ngIf="
+        (documents$ | async) &&
+        (documents$ | async)!.length === 0 &&
+        !(loading$ | async)
+      "
+      class="mt-8 text-center py-8"
+    >
+      <div class="text-gray-400 mb-4">
+        <mat-icon class="text-6xl">cloud_upload</mat-icon>
+      </div>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">
+        No documents uploaded yet
+      </h3>
+      <p class="text-gray-600">Upload your first PDF document to get started</p>
     </div>
   </div>
 </div>

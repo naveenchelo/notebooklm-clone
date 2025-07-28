@@ -1,190 +1,279 @@
-<div class="home-container">
-  <div class="max-w-7xl mx-auto p-6">
-    <!-- Welcome Section -->
-    <div class="welcome-section mb-8">
-      <h1 class="text-4xl font-bold text-slate-800 mb-2">
-        Welcome to NotebookLM
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">
+        Welcome to NotebookLM Clone
       </h1>
-      <p class="text-xl text-slate-600">Your AI-powered document assistant</p>
+      <p class="text-xl text-gray-600">
+        Upload PDF documents and chat with them using AI
+      </p>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="quick-actions mb-8">
-      <h2 class="text-2xl font-semibold text-slate-800 mb-4">Quick Actions</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <mat-card class="action-card" routerLink="/upload">
-          <mat-card-content class="text-center p-6">
-            <div class="action-icon mb-4">
-              <mat-icon class="text-4xl text-blue-500">cloud_upload</mat-icon>
-            </div>
-            <h3 class="text-lg font-semibold text-slate-700 mb-2">
-              Upload Document
-            </h3>
-            <p class="text-slate-500">
-              Upload your PDF files to start chatting with AI
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center">
+          <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              ></path>
+            </svg>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-gray-500">Total Documents</p>
+            <p class="text-2xl font-semibold text-gray-900">
+              {{ (documentsStats$ | async)?.total || 0 }}
             </p>
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </div>
+      </div>
 
-        <mat-card class="action-card" routerLink="/chat">
-          <mat-card-content class="text-center p-6">
-            <div class="action-icon mb-4">
-              <mat-icon class="text-4xl text-green-500">chat</mat-icon>
-            </div>
-            <h3 class="text-lg font-semibold text-slate-700 mb-2">
-              Start Chat
-            </h3>
-            <p class="text-slate-500">
-              Ask questions about your uploaded documents
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center">
+          <div class="p-3 rounded-full bg-green-100 text-green-600">
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-gray-500">Processed</p>
+            <p class="text-2xl font-semibold text-gray-900">
+              {{ (documentsStats$ | async)?.processed || 0 }}
             </p>
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </div>
+      </div>
 
-        <mat-card class="action-card" routerLink="/viewer">
-          <mat-card-content class="text-center p-6">
-            <div class="action-icon mb-4">
-              <mat-icon class="text-4xl text-purple-500"
-                >picture_as_pdf</mat-icon
-              >
-            </div>
-            <h3 class="text-lg font-semibold text-slate-700 mb-2">
-              View Documents
-            </h3>
-            <p class="text-slate-500">Browse and annotate your PDF files</p>
-          </mat-card-content>
-        </mat-card>
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center">
+          <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+              ></path>
+            </svg>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-gray-500">Total Pages</p>
+            <p class="text-2xl font-semibold text-gray-900">
+              {{ (documentsStats$ | async)?.totalPages || 0 }}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Recent Documents -->
-    <div class="recent-documents">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-2xl font-semibold text-slate-800">Recent Documents</h2>
-        <button mat-stroked-button color="primary" routerLink="/upload">
-          <mat-icon>add</mat-icon>
-          Upload New
-        </button>
+    <div class="bg-white rounded-lg shadow-md">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-900">Recent Documents</h2>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <mat-card *ngFor="let doc of recentDocuments" class="document-card">
-          <mat-card-content>
-            <div class="flex items-start space-x-3">
-              <div
-                class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0"
-              >
-                <mat-icon class="text-blue-500">picture_as_pdf</mat-icon>
-              </div>
-              <div class="flex-1 min-w-0">
-                <h3 class="font-semibold text-slate-700 truncate">
-                  {{ doc.name }}
-                </h3>
-                <p class="text-sm text-slate-500 mb-2">
-                  {{ doc.pages }} pages • {{ doc.size }}
-                </p>
-                <p class="text-xs text-slate-400">
-                  Uploaded {{ doc.uploadedAt | date: "shortDate" }}
-                </p>
-                <div
-                  *ngIf="doc.lastAccessed"
-                  class="text-xs text-slate-400 mt-1"
-                >
-                  Last accessed {{ doc.lastAccessed | date: "short" }}
-                </div>
-              </div>
-            </div>
-          </mat-card-content>
-          <mat-card-actions class="p-3 pt-0">
-            <button
-              mat-button
-              color="primary"
-              class="text-sm"
-              routerLink="/chat"
-            >
-              <mat-icon>chat</mat-icon>
-              Chat
-            </button>
-            <button
-              mat-button
-              color="accent"
-              class="text-sm"
-              routerLink="/viewer"
-            >
-              <mat-icon>visibility</mat-icon>
-              View
-            </button>
-            <button mat-icon-button class="text-slate-400">
-              <mat-icon>more_vert</mat-icon>
-            </button>
-          </mat-card-actions>
-        </mat-card>
-      </div>
+      <div class="p-6">
+        <div *ngIf="loading$ | async" class="text-center py-8">
+          <div
+            class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"
+          ></div>
+          <p class="mt-2 text-gray-600">Loading documents...</p>
+        </div>
 
-      <!-- Empty State -->
-      <div *ngIf="recentDocuments.length === 0" class="empty-state">
-        <div class="text-center py-12">
-          <div class="empty-icon mb-4">
-            <mat-icon class="text-6xl text-slate-300">folder_open</mat-icon>
+        <div
+          *ngIf="
+            (documents$ | async) &&
+            (documents$ | async)!.length === 0 &&
+            !(loading$ | async)
+          "
+          class="text-center py-8"
+        >
+          <div class="text-gray-400 mb-4">
+            <svg
+              class="w-16 h-16 mx-auto"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              ></path>
+            </svg>
           </div>
-          <h3 class="text-xl font-semibold text-slate-600 mb-2">
+          <h3 class="text-lg font-medium text-gray-900 mb-2">
             No documents yet
           </h3>
-          <p class="text-slate-500 mb-6">
-            Upload your first PDF to start using NotebookLM
+          <p class="text-gray-600 mb-4">
+            Upload your first PDF document to get started
           </p>
-          <button mat-raised-button color="primary" routerLink="/upload">
-            <mat-icon>upload_file</mat-icon>
-            Upload Your First Document
+          <button
+            routerLink="/upload"
+            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Upload Document
           </button>
+        </div>
+
+        <div
+          *ngIf="(documents$ | async) && (documents$ | async)!.length > 0"
+          class="space-y-4"
+        >
+          <div
+            *ngFor="let document of documents$ | async"
+            class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
+          >
+            <div class="flex items-center space-x-4">
+              <div class="flex-shrink-0">
+                <div
+                  class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center"
+                >
+                  <svg
+                    class="w-6 h-6 text-blue-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <h3 class="text-sm font-medium text-gray-900">
+                  {{ document.originalName || "Untitled Document" }}
+                </h3>
+                <p class="text-sm text-gray-500">
+                  {{ document.pages || 0 }} pages •
+                  {{ formatFileSize(document.fileSize || 0) }}
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span
+                [class]="getStatusClass(document.status)"
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+              >
+                {{ document.status }}
+              </span>
+              <button
+                [routerLink]="['/chat', document.id]"
+                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                Chat
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Features Overview -->
-    <div class="features-overview mt-12">
-      <h2 class="text-2xl font-semibold text-slate-800 mb-6">Features</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="feature-item">
-          <div class="feature-icon mb-3">
-            <mat-icon class="text-3xl text-blue-500">psychology</mat-icon>
-          </div>
-          <h3 class="font-semibold text-slate-700 mb-2">AI-Powered Chat</h3>
-          <p class="text-sm text-slate-500">
-            Ask questions about your documents and get intelligent answers with
-            citations
-          </p>
+    <!-- Quick Actions -->
+    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+        <div class="space-y-3">
+          <button
+            routerLink="/upload"
+            class="w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            <svg
+              class="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+              ></path>
+            </svg>
+            Upload New Document
+          </button>
+          <button
+            routerLink="/search"
+            class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            <svg
+              class="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              ></path>
+            </svg>
+            Search Documents
+          </button>
         </div>
+      </div>
 
-        <div class="feature-item">
-          <div class="feature-icon mb-3">
-            <mat-icon class="text-3xl text-green-500">source</mat-icon>
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">
+          Getting Started
+        </h3>
+        <div class="space-y-3 text-sm text-gray-600">
+          <div class="flex items-start">
+            <div
+              class="flex-shrink-0 w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-0.5"
+            >
+              <span class="text-blue-600 text-xs font-medium">1</span>
+            </div>
+            <p>Upload a PDF document using the upload button</p>
           </div>
-          <h3 class="font-semibold text-slate-700 mb-2">Smart Citations</h3>
-          <p class="text-sm text-slate-500">
-            Every answer includes page references so you can verify the source
-          </p>
-        </div>
-
-        <div class="feature-item">
-          <div class="feature-icon mb-3">
-            <mat-icon class="text-3xl text-purple-500">edit_note</mat-icon>
+          <div class="flex items-start">
+            <div
+              class="flex-shrink-0 w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-0.5"
+            >
+              <span class="text-blue-600 text-xs font-medium">2</span>
+            </div>
+            <p>Wait for the document to be processed and indexed</p>
           </div>
-          <h3 class="font-semibold text-slate-700 mb-2">
-            Document Annotations
-          </h3>
-          <p class="text-sm text-slate-500">
-            Highlight and annotate important sections in your PDFs
-          </p>
-        </div>
-
-        <div class="feature-item">
-          <div class="feature-icon mb-3">
-            <mat-icon class="text-3xl text-orange-500">security</mat-icon>
+          <div class="flex items-start">
+            <div
+              class="flex-shrink-0 w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-0.5"
+            >
+              <span class="text-blue-600 text-xs font-medium">3</span>
+            </div>
+            <p>Start chatting with your document using AI</p>
           </div>
-          <h3 class="font-semibold text-slate-700 mb-2">Secure & Private</h3>
-          <p class="text-sm text-slate-500">
-            Your documents are processed securely and never shared
-          </p>
         </div>
       </div>
     </div>
