@@ -15,7 +15,7 @@ services:
       - key: PORT
         value: 3000
       - key: FRONTEND_URL
-        value: https://notebooklm-frontend.onrender.com
+        value: https://notebooklm-frontend-i2gp.onrender.com
 
       # === AI Provider ===
       - key: GROQ_API_KEY
@@ -66,9 +66,13 @@ services:
   # ──────────────────────────────
   # 🌐 Frontend: Angular Static Site
   # ──────────────────────────────
-  - type: web
+  - type: static
     name: notebooklm-frontend
-    env: static
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist/frontend
+    # Add these for Angular routing
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
