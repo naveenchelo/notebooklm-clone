@@ -1,129 +1,75 @@
 <div class="app-container">
-    <mat-sidenav-container class="sidenav-container">
-        <!-- Sidebar -->
-        <mat-sidenav #drawer mode="over" [opened]="false" class="sidenav" fixedInViewport="true" fixedTopGap="64">
+  <!-- Top Navigation Bar -->
+  <nav class="top-nav">
+    <div class="nav-container">
+      <!-- Logo and Brand -->
+      <div class="nav-brand">
+        <div class="brand-logo">
+          <mat-icon class="text-white">auto_stories</mat-icon>
+        </div>
+        <span class="brand-text">NotebookLM</span>
+      </div>
 
-            <!-- Sidebar Header -->
-            <div class="sidebar-header">
-                <div class="flex items-center justify-between p-4">
-                    <div class="flex items-center space-x-3">
-                        <div
-                            class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
-                            <mat-icon class="text-white text-lg">auto_stories</mat-icon>
-                        </div>
-                        <span class="font-semibold text-slate-700">NotebookLM</span>
-                    </div>
-                    <button mat-icon-button (click)="closeSidebarOnMobile()"
-                        class="md:hidden text-slate-600 hover:text-slate-800">
-                        <mat-icon>close</mat-icon>
-                    </button>
-                </div>
-                <mat-divider></mat-divider>
-            </div>
+      <!-- Main Navigation -->
+      <div class="nav-menu">
+        <a routerLink="/" routerLinkActive="active" class="nav-link">
+          <mat-icon>home</mat-icon>
+          <span>Home</span>
+        </a>
+        <a routerLink="/upload" routerLinkActive="active" class="nav-link">
+          <mat-icon>cloud_upload</mat-icon>
+          <span>Upload</span>
+        </a>
+        <a routerLink="/chat" routerLinkActive="active" class="nav-link">
+          <mat-icon>chat</mat-icon>
+          <span>Chat</span>
+        </a>
+        <a routerLink="/viewer" routerLinkActive="active" class="nav-link">
+          <mat-icon>picture_as_pdf</mat-icon>
+          <span>Viewer</span>
+        </a>
+      </div>
 
-            <!-- Navigation Menu -->
-            <mat-nav-list class="navigation-menu">
-                <a mat-list-item routerLink="/" routerLinkActive="active" (click)="closeSidebarOnMobile()"
-                    class="nav-item">
-                    <mat-icon matListItemIcon class="nav-icon">cloud_upload</mat-icon>
-                    <div matListItemTitle>Upload Document</div>
-                    <div matListItemLine class="text-sm text-slate-500">Upload your PDF files</div>
-                </a>
+      <!-- Right Side Actions -->
+      <div class="nav-actions">
+        <button mat-icon-button class="action-btn" matTooltip="Search">
+          <mat-icon>search</mat-icon>
+        </button>
+        <button mat-icon-button class="action-btn" matTooltip="Notifications">
+          <mat-icon>notifications</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          class="action-btn"
+          [matMenuTriggerFor]="userMenu"
+        >
+          <mat-icon>account_circle</mat-icon>
+        </button>
+      </div>
+    </div>
+  </nav>
 
-                <a mat-list-item routerLink="/chat" routerLinkActive="active" (click)="closeSidebarOnMobile()"
-                    class="nav-item">
-                    <mat-icon matListItemIcon class="nav-icon">chat</mat-icon>
-                    <div matListItemTitle>AI Chat</div>
-                    <div matListItemLine class="text-sm text-slate-500">Chat with your documents</div>
-                </a>
-
-                <a mat-list-item routerLink="/viewer" routerLinkActive="active" (click)="closeSidebarOnMobile()"
-                    class="nav-item">
-                    <mat-icon matListItemIcon class="nav-icon">picture_as_pdf</mat-icon>
-                    <div matListItemTitle>PDF Viewer</div>
-                    <div matListItemLine class="text-sm text-slate-500">View and annotate PDFs</div>
-                </a>
-
-                <mat-divider class="my-4"></mat-divider>
-
-                <!-- Recent Documents Section -->
-                <div class="px-4 py-2">
-                    <h3 class="text-sm font-medium text-slate-500 uppercase tracking-wide">Recent Documents</h3>
-                </div>
-
-                <a mat-list-item class="nav-item document-item">
-                    <mat-icon matListItemIcon class="text-blue-500">picture_as_pdf</mat-icon>
-                    <div matListItemTitle class="truncate text-slate-700">Research Paper.pdf</div>
-                    <div matListItemLine class="text-xs text-slate-400">2 hours ago</div>
-                </a>
-
-                <a mat-list-item class="nav-item document-item">
-                    <mat-icon matListItemIcon class="text-blue-500">picture_as_pdf</mat-icon>
-                    <div matListItemTitle class="truncate text-slate-700">Meeting Notes.pdf</div>
-                    <div matListItemLine class="text-xs text-slate-400">1 day ago</div>
-                </a>
-            </mat-nav-list>
-
-            <!-- Sidebar Footer -->
-            <div class="sidebar-footer">
-                <mat-divider></mat-divider>
-                <div class="p-4">
-                    <button mat-stroked-button class="w-full text-slate-600 border-slate-300 hover:bg-slate-50"
-                        color="primary">
-                        <mat-icon>settings</mat-icon>
-                        Settings
-                    </button>
-                </div>
-            </div>
-        </mat-sidenav>
-
-        <!-- Main Content Area -->
-        <mat-sidenav-content>
-            <!-- Top Toolbar -->
-            <mat-toolbar class="app-toolbar" color="primary">
-                <button mat-icon-button (click)="toggleSidebar()" matTooltip="Toggle Navigation"
-                    matTooltipPosition="below">
-                    <mat-icon>menu</mat-icon>
-                </button>
-
-                <div class="flex items-center flex-1 ml-4">
-                    <span class="text-xl font-semibold hidden sm:block">NotebookLM Clone</span>
-                    <span class="text-lg font-semibold sm:hidden">NotebookLM</span>
-                </div>
-
-                <!-- Toolbar Actions -->
-                <div class="flex items-center space-x-2">
-                    <button mat-icon-button matTooltip="Search" class="hidden sm:flex">
-                        <mat-icon>search</mat-icon>
-                    </button>
-                    <button mat-icon-button matTooltip="Notifications">
-                        <mat-icon>notifications</mat-icon>
-                    </button>
-                    <button mat-icon-button matTooltip="Account" [matMenuTriggerFor]="accountMenu">
-                        <mat-icon>account_circle</mat-icon>
-                    </button>
-                </div>
-            </mat-toolbar>
-
-            <!-- Main Content -->
-            <main class="main-content">
-                <div class="content-container">
-
-
-                </div>
-            </main>
-        </mat-sidenav-content>
-    </mat-sidenav-container>
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <div class="content-container">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
 </div>
 
-<!-- Account Menu -->
-<mat-menu #accountMenu="matMenu">
-    <button mat-menu-item>
-        <mat-icon>person</mat-icon>
-        <span>Profile</span>
-    </button>
-    <button mat-menu-item>
-        <mat-icon>logout</mat-icon>
-        <span>Logout</span>
-    </button>
+<!-- User Menu -->
+<mat-menu #userMenu="matMenu" class="user-menu">
+  <button mat-menu-item>
+    <mat-icon>person</mat-icon>
+    <span>Profile</span>
+  </button>
+  <button mat-menu-item>
+    <mat-icon>settings</mat-icon>
+    <span>Settings</span>
+  </button>
+  <mat-divider></mat-divider>
+  <button mat-menu-item>
+    <mat-icon>logout</mat-icon>
+    <span>Logout</span>
+  </button>
 </mat-menu>

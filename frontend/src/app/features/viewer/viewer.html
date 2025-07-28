@@ -1,0 +1,207 @@
+<div class="viewer-container">
+  <!-- PDF Viewer Toolbar -->
+  <mat-toolbar class="viewer-toolbar">
+    <div class="toolbar-left">
+      <button
+        mat-icon-button
+        matTooltip="Previous Page"
+        (click)="previousPage()"
+        [disabled]="currentPage <= 1"
+      >
+        <mat-icon>navigate_before</mat-icon>
+      </button>
+
+      <div class="page-info">
+        <span class="page-text"
+          >Page {{ currentPage }} of {{ totalPages }}</span
+        >
+      </div>
+
+      <button
+        mat-icon-button
+        matTooltip="Next Page"
+        (click)="nextPage()"
+        [disabled]="currentPage >= totalPages"
+      >
+        <mat-icon>navigate_next</mat-icon>
+      </button>
+    </div>
+
+    <div class="toolbar-center">
+      <button
+        mat-icon-button
+        matTooltip="Zoom Out"
+        (click)="zoomOut()"
+        [disabled]="zoom <= 0.5"
+      >
+        <mat-icon>zoom_out</mat-icon>
+      </button>
+
+      <div class="zoom-control">
+        <span class="zoom-text">{{ (zoom * 100).toFixed(0) }}%</span>
+        <div class="zoom-buttons">
+          <button
+            mat-icon-button
+            (click)="setZoom(0.5)"
+            [class.active]="zoom === 0.5"
+          >
+            <span class="text-xs">50%</span>
+          </button>
+          <button
+            mat-icon-button
+            (click)="setZoom(1)"
+            [class.active]="zoom === 1"
+          >
+            <span class="text-xs">100%</span>
+          </button>
+          <button
+            mat-icon-button
+            (click)="setZoom(1.5)"
+            [class.active]="zoom === 1.5"
+          >
+            <span class="text-xs">150%</span>
+          </button>
+          <button
+            mat-icon-button
+            (click)="setZoom(2)"
+            [class.active]="zoom === 2"
+          >
+            <span class="text-xs">200%</span>
+          </button>
+        </div>
+      </div>
+
+      <button
+        mat-icon-button
+        matTooltip="Zoom In"
+        (click)="zoomIn()"
+        [disabled]="zoom >= 3"
+      >
+        <mat-icon>zoom_in</mat-icon>
+      </button>
+    </div>
+
+    <div class="toolbar-right">
+      <button mat-icon-button matTooltip="Fit to Width" (click)="fitToWidth()">
+        <mat-icon>fit_screen</mat-icon>
+      </button>
+
+      <button mat-icon-button matTooltip="Fit to Page" (click)="fitToPage()">
+        <mat-icon>fullscreen</mat-icon>
+      </button>
+
+      <button mat-icon-button matTooltip="Download PDF" (click)="downloadPDF()">
+        <mat-icon>download</mat-icon>
+      </button>
+    </div>
+  </mat-toolbar>
+
+  <!-- PDF Content Area -->
+  <div class="pdf-content">
+    <div class="pdf-container" #pdfContainer>
+      <!-- PDF Page Display -->
+      <div class="pdf-page" [style.transform]="'scale(' + zoom + ')'">
+        <div class="page-mockup">
+          <div class="page-header">
+            <h2 class="page-title">Sample PDF Document</h2>
+            <p class="page-subtitle">Page {{ currentPage }}</p>
+          </div>
+
+          <div class="page-content">
+            <p class="content-text">
+              This is a mock PDF page for demonstration purposes. In a real
+              implementation, this would display the actual PDF content using
+              PDF.js library.
+            </p>
+
+            <p class="content-text">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris
+              nisi ut aliquip ex ea commodo consequat.
+            </p>
+
+            <p class="content-text">
+              Duis aute irure dolor in reprehenderit in voluptate velit esse
+              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+              cupidatat non proident, sunt in culpa qui officia deserunt mollit
+              anim id est laborum.
+            </p>
+
+            <div class="highlighted-text" *ngIf="currentPage === 1">
+              <p class="content-text highlight">
+                This text would be highlighted when referenced in chat
+                citations.
+              </p>
+            </div>
+          </div>
+
+          <div class="page-footer">
+            <span class="page-number">{{ currentPage }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar for Annotations -->
+    <div class="viewer-sidebar" [class.sidebar-open]="showSidebar">
+      <div class="sidebar-header">
+        <h3 class="sidebar-title">Annotations</h3>
+        <button mat-icon-button (click)="toggleSidebar()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="sidebar-content">
+        <div class="annotation-item" *ngFor="let annotation of annotations">
+          <div class="annotation-header">
+            <span class="annotation-type">{{ annotation.type }}</span>
+            <span class="annotation-page">Page {{ annotation.page }}</span>
+          </div>
+          <p class="annotation-text">{{ annotation.text }}</p>
+          <div class="annotation-actions">
+            <button mat-button color="primary" class="text-sm">
+              <mat-icon>edit</mat-icon>
+              Edit
+            </button>
+            <button mat-button color="warn" class="text-sm">
+              <mat-icon>delete</mat-icon>
+              Delete
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="annotations.length === 0" class="no-annotations">
+          <mat-icon class="text-slate-400">note_add</mat-icon>
+          <p class="text-slate-500">No annotations yet</p>
+          <button mat-stroked-button color="primary" class="mt-2">
+            <mat-icon>add</mat-icon>
+            Add Annotation
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Action Button -->
+  <button
+    mat-fab
+    color="primary"
+    class="fab-annotate"
+    matTooltip="Add Annotation"
+    (click)="addAnnotation()"
+  >
+    <mat-icon>edit</mat-icon>
+  </button>
+
+  <!-- Sidebar Toggle -->
+  <button
+    mat-fab
+    color="accent"
+    class="fab-sidebar"
+    matTooltip="Toggle Annotations"
+    (click)="toggleSidebar()"
+  >
+    <mat-icon>{{ showSidebar ? "close" : "notes" }}</mat-icon>
+  </button>
+</div>

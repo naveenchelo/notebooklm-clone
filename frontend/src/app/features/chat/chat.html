@@ -1,0 +1,122 @@
+<div class="chat-container">
+  <div class="chat-layout">
+    <!-- Chat Messages Area -->
+    <div class="messages-container" #messagesContainer>
+      <!-- Welcome Message -->
+      <div *ngIf="messages.length === 0" class="welcome-message">
+        <div class="text-center">
+          <div class="welcome-icon">
+            <mat-icon class="text-6xl text-blue-500">chat</mat-icon>
+          </div>
+          <h2 class="text-2xl font-bold text-slate-800 mb-2">
+            Welcome to AI Chat
+          </h2>
+          <p class="text-slate-600 mb-6">
+            Ask questions about your uploaded documents and get AI-powered
+            answers with citations.
+          </p>
+          <div class="suggestions">
+            <h3 class="text-sm font-medium text-slate-500 mb-3">Try asking:</h3>
+            <div class="flex flex-wrap gap-2 justify-center">
+              <button
+                *ngFor="let suggestion of suggestions"
+                mat-stroked-button
+                class="suggestion-btn"
+                (click)="sendMessage(suggestion)"
+              >
+                {{ suggestion }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div
+        *ngFor="let message of messages; trackBy: trackByMessageId"
+        class="message-wrapper"
+        [ngClass]="message.sender"
+      >
+        <div class="message">
+          <div class="message-avatar">
+            <mat-icon *ngIf="message.sender === 'user'" class="text-white"
+              >person</mat-icon
+            >
+            <mat-icon *ngIf="message.sender === 'ai'" class="text-white"
+              >smart_toy</mat-icon
+            >
+          </div>
+          <div class="message-content">
+            <div class="message-text" [innerHTML]="message.content"></div>
+
+            <!-- Citations -->
+            <div
+              *ngIf="message.citations && message.citations.length > 0"
+              class="citations"
+            >
+              <div class="citations-header">
+                <mat-icon class="text-sm">source</mat-icon>
+                <span class="text-sm font-medium">Sources:</span>
+              </div>
+              <div class="citations-list">
+                <button
+                  *ngFor="let citation of message.citations"
+                  mat-stroked-button
+                  class="citation-btn"
+                  matTooltip="Go to page {{ citation.page }}"
+                >
+                  Page {{ citation.page }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div *ngIf="message.isLoading" class="loading-indicator">
+              <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+
+            <div class="message-timestamp">
+              {{ message.timestamp | date: "shortTime" }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="input-container">
+      <mat-card class="input-card">
+        <mat-card-content>
+          <div class="input-wrapper">
+            <mat-form-field class="message-input" appearance="outline">
+              <mat-label>Ask a question about your document...</mat-label>
+              <textarea
+                matInput
+                [(ngModel)]="newMessage"
+                (keydown.enter)="onEnterPress($event)"
+                placeholder="Type your message here..."
+                rows="1"
+                #messageInput
+              ></textarea>
+              <mat-icon matSuffix class="text-slate-400">send</mat-icon>
+            </mat-form-field>
+
+            <button
+              mat-fab
+              color="primary"
+              class="send-btn"
+              [disabled]="!newMessage.trim() || isTyping"
+              (click)="sendMessage(newMessage)"
+            >
+              <mat-icon>send</mat-icon>
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
