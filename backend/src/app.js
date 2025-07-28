@@ -13,64 +13,62 @@ const app = express();
 // Security middleware
 app.use(
   helmet({
-    contentSecurityPolicy: false, // Disable for development
+    contentSecurityPolicy: false, // Disable CSP for now (adjust in production if needed)
   })
 );
 
-// Other middleware
+// Logging, compression, body parsing, CORS
 app.use(compression());
 app.use(morgan('combined'));
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || '*',
+    origin: '*', // Accept all origins; adjust if needed for security
     credentials: true,
   })
 );
 
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.json({ limit: config.upload.maxFileSize || '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: config.upload.maxFileSize || '50mb' }));
 
-// Serve static files (Angular build)
+// Serve Angular static files from frontend/dist
 const frontendPath = path.join(__dirname, '../../frontend/dist');
 app.use(express.static(frontendPath));
 
-// Import routes
+// === API ROUTES ===
 const uploadRoutes = require('./routes/upload');
 const chatRoutes = require('./routes/chat');
 const documentRoutes = require('./routes/documents');
 
-// API Routes
 app.use('/api/upload', uploadRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/documents', documentRoutes);
 
-// Health check
+// === HEALTH CHECK ===
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'OK',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV,
+    environment: config.server.nodeEnv,
   });
 });
 
-// Serve Angular app for all other routes
+// === FALLBACK: SERVE ANGULAR INDEX ===
+// Any non-API route should serve Angular app (for deep linking)
 app.get('*', (req, res) => {
   res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
-// Global error handler
+// === GLOBAL ERROR HANDLER ===
 app.use((err, req, res, next) => {
-  console.error('Error:', err);
+  console.error('❌ Error:', err);
   res.status(err.status || 500).json({
-    error: process.env.NODE_ENV === 'production' ? 'Internal Server Error' : err.message,
+    error: config.server.nodeEnv === 'production' ? 'Internal Server Error' : err.message,
   });
 });
 
-const PORT = process.env.PORT || 3000;
+// === START SERVER ===
+const PORT = config.server.port;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🌐 Frontend URL: ${process.env.FRONTEND_URL || 'Not set'}`);
+  console.log(`📝 Environment: ${config.server.nodeEnv}`);
 });
-
-module.exports = app;

@@ -4,27 +4,27 @@
   "description": "NotebookLM clone with PDF processing and AI chat",
   "main": "backend/src/app.js",
   "scripts": {
-    "build": "npm run install:all && npm run build:frontend",
     "install:all": "npm run install:backend && npm run install:frontend",
     "install:backend": "cd backend && npm install",
     "install:frontend": "cd frontend && npm install",
-    "build:frontend": "cd frontend && npm run build --if-present || echo 'Frontend build skipped'",
-    "start": "cd backend && npm start",
+    "build:frontend": "cd frontend && npm run build",
+    "build": "npm run install:all && npm run build:frontend",
+    "start": "cd backend && node src/app.js",
     "dev": "cd backend && npm run dev",
-    "postinstall": "npm run build:frontend || echo 'Frontend build failed, continuing with backend only'"
+    "postinstall": "npm run build:frontend || echo '⚠️ Frontend build failed, continuing...'"
   },
   "dependencies": {
+    "@pinecone-database/pinecone": "^1.1.0",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-rate-limit": "^6.10.0",
-    "multer": "^1.4.5-lts.1",
-    "pdf-parse": "^1.1.1",
-    "@pinecone-database/pinecone": "^1.1.0",
     "groq-sdk": "^0.3.0",
-    "dotenv": "^16.3.1",
-    "cors": "^2.8.5",
     "helmet": "^7.0.0",
     "morgan": "^1.10.0",
-    "compression": "^1.7.4"
+    "multer": "^1.4.5-lts.1",
+    "pdf-parse": "^1.1.1"
   },
   "engines": {
     "node": "18.x",
